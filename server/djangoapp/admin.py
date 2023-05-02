@@ -12,14 +12,14 @@ class CarModelInline(admin.StackedInline):
 
 # CarModelAdmin class
 class CarModelAdmin(admin.ModelAdmin):
-    list_display = ['name']
+    list_display = ['name', 'dealer_id', 'car_type', 'year']
+    search_fields = ['name']
 
 # CarMakeAdmin class with CarModelInline
 class CarMakeAdmin(admin.ModelAdmin):
     inlines = [CarModelInline]
     list_display = ('name', 'description')
-    list_filter = ['name']
-    search_fields = ['name', 'description']
+    search_fields = ['name']
 
 # Register models here
 admin.site.register(CarMake, CarMakeAdmin)
