@@ -4,10 +4,6 @@ import json
 from .models import CarDealer, DealerReview
 from requests.auth import HTTPBasicAuth
 
-
-# Create a `get_request` to make HTTP GET requests
-# e.g., response = requests.get(url, params=params, headers={'Content-Type': 'application/json'},
-#                                     auth=HTTPBasicAuth('apikey', api_key))
 def get_request(url, **kwargs):
 
     # If argument contains API KEY
@@ -38,9 +34,6 @@ def get_request(url, **kwargs):
     json_data = json.loads(response.text)
     return json_data
 
-# Create a `post_request` to make HTTP POST requests
-# e.g., response = requests.post(url, params=kwargs, json=payload)
-
 def post_request(url, payload, **kwargs):
     print("POST to {} ".format(url))
     response = requests.post(url, params=kwargs, json=payload)
@@ -49,10 +42,6 @@ def post_request(url, payload, **kwargs):
     json_data = json.loads(response.text)
     return json_data
 
-# Create a get_dealers_from_cf method to get dealers from a cloud function
-# def get_dealers_from_cf(url, **kwargs):
-# - Call get_request() with specified arguments
-# - Parse JSON results into a CarDealer object list
 def get_dealers_from_cf(url, **kwargs):
     results = []
 
@@ -115,11 +104,6 @@ def get_dealer_by_id_from_cf(url, id):
 
     return results[0]
 
-
-# Create a get_dealer_reviews_from_cf method to get reviews by dealer id from a cloud function
-# def get_dealer_by_id_from_cf(url, dealerId):
-# - Call get_request() with specified arguments
-# - Parse JSON results into a DealerView object list
 def get_dealer_reviews_from_cf(url, dealerId):
     results = []
 
@@ -156,25 +140,4 @@ def get_dealer_reviews_from_cf(url, dealerId):
 
     return results
 
-# Create an `analyze_review_sentiments` method to call Watson NLU and analyze text
-# def analyze_review_sentiments(text):
-def analyze_review_sentiments(text):
-# - Call get_request() with specified arguments
-# - Get the returned sentiment label such as Positive or Negative
-    url = 'https://api.us-south.natural-language-understanding.watson.cloud.ibm.com/instances/044cf254-8c28-4dcc-b760-72c5b1e66605/v1/analyze'
-    api_key = 'ej-xPJVZc8X96rjfOIfog4ntj0Sgif7e-RqlCoBVLl1G'
-
-    response = get_request(url, 
-                           text=text, 
-                           api_key=api_key, 
-                           version='2021-08-01', 
-                           features='sentiment',
-                           language='en', 
-                           return_analyzed_text=True)
-
-    label=json.dumps(response, indent=2) 
-
-    label = response['sentiment']['document']['label'] 
-
-    return(label)
 

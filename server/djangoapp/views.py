@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404, render, redirect
@@ -85,19 +84,40 @@ def registration_request(request):
 
 # Update the `get_dealerships` view to render the index page with a list of dealerships
 def get_dealerships(request):
-    context = {}
     if request.method == "GET":
-        return render(request, 'djangoapp/index.html', context)
+        context = {}
+
+        state = request.GET.get("st")
+        dealerId = request.GET.get("dealerId")
+        url = "https://us-south.functions.appdomain.cloud/api/v1/web/c524d2dc-2bcf-467a-a575-d7a46c0b5a05/dealership-package/get-dealerships"
+
+        try:
+            if state:
+                dealerships = get_dealers_from_cf(url, st=state)
+            elif dealerId:
+                dealerships = get_dealers_from_cf(url, dealerId=dealerId)
+            else:
+                dealerships = get_dealers_from_cf(url)
+        except Exception as e:
+            # Handle the error and set dealerships to an empty list or display an error message
+            dealerships = []
+            context["error"] = f"An error occurred while fetching dealerships: {e}"
+
+        context["dealership_list"] = dealerships
+        print(context["dealership_list"])
+
+        return render(request, "djangoapp/index.html", context=context)
+
 # Create a `get_dealer_details` view to render the reviews of a dealer
 def get_dealer_details(request, dealer_id):
     if request.method == "GET":
         context = {}
 
-        dealer_url = "https://e324753c.us-south.apigw.appdomain.cloud/api/review"
+        dealer_url = "https://us-south.functions.appdomain.cloud/api/v1/web/c524d2dc-2bcf-467a-a575-d7a46c0b5a05/dealership-package/get-review"
         reviews = get_dealer_reviews_from_cf(dealer_url, dealer_id)
         context["review_list"] = reviews
 
-        dealer_url = "https://e324753c.us-south.apigw.appdomain.cloud/api/dealership"
+        dealer_url = "https://us-south.functions.appdomain.cloud/api/v1/web/c524d2dc-2bcf-467a-a575-d7a46c0b5a05/dealership-package/get-dealerships"
         dealer = get_dealer_by_id_from_cf(dealer_url, id=dealer_id)
         context["dealer"] = dealer
 
@@ -107,7 +127,7 @@ def get_dealer_details(request, dealer_id):
 # Create a `add_review` view to submit a review
 def add_review(request, dealer_id):
     context = {}
-    dealer_url = "https://e324753c.us-south.apigw.appdomain.cloud/api/dealership"
+    dealer_url = "https://us-south.functions.appdomain.cloud/api/v1/web/c524d2dc-2bcf-467a-a575-d7a46c0b5a05/dealership-package/post-review"
     dealer = get_dealer_by_id_from_cf(dealer_url, id=dealer_id)
     context["dealer"] = dealer
 
@@ -140,6 +160,6 @@ def add_review(request, dealer_id):
 
             new_payload = {}
             new_payload["review"] = payload
-            review_post_url = "https://e324753c.us-south.apigw.appdomain.cloud/api/review"
+            review_post_url = "https://us-south.functions.appdomain.cloud/api/v1/web/c524d2dc-2bcf-467a-a575-d7a46c0b5a05/dealership-package/post-review"
             post_request(review_post_url, new_payload, id=dealer_id)
         return redirect("djangoapp:dealer_details", dealer_id=dealer_id)
