@@ -84,29 +84,22 @@ def registration_request(request):
 
 # Update the `get_dealerships` view to render the index page with a list of dealerships
 def get_dealerships(request):
+    # print("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
+    # print(request.method)
+    # print("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
+
+    context = {}
     if request.method == "GET":
-        context = {}
-
-        state = request.GET.get("st")
-        dealerId = request.GET.get("dealerId")
         url = "https://us-south.functions.appdomain.cloud/api/v1/web/c524d2dc-2bcf-467a-a575-d7a46c0b5a05/dealership-package/get-dealerships"
-
-        try:
-            if state:
-                dealerships = get_dealers_from_cf(url, st=state)
-            elif dealerId:
-                dealerships = get_dealers_from_cf(url, dealerId=dealerId)
-            else:
-                dealerships = get_dealers_from_cf(url)
-        except Exception as e:
-            # Handle the error and set dealerships to an empty list or display an error message
-            dealerships = []
-            context["error"] = f"An error occurred while fetching dealerships: {e}"
-
-        context["dealership_list"] = dealerships
-        print(context["dealership_list"])
-
-        return render(request, "djangoapp/index.html", context=context)
+        dealerships = get_dealers_from_cf(url)
+        context['dealership_list'] = dealerships
+        # print("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
+        # print(dealerships)
+        # print(len(dealerships))
+        # print(context)
+        # print("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
+        
+    return render(request, 'djangoapp/index.html', context)
 
 # Create a `get_dealer_details` view to render the reviews of a dealer
 def get_dealer_details(request, dealer_id):
