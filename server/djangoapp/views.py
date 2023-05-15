@@ -92,6 +92,7 @@ def get_dealerships(request):
     if request.method == "GET":
         url = "https://us-south.functions.appdomain.cloud/api/v1/web/c524d2dc-2bcf-467a-a575-d7a46c0b5a05/dealership-package/get-dealerships"
         dealerships = get_dealers_from_cf(url)
+        dealer_names = ' '.join([dealer.short_name for dealer in dealerships])
         context['dealership_list'] = dealerships
         # print("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
         # print(dealerships)
