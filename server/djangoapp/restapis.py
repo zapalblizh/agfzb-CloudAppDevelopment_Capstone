@@ -88,12 +88,22 @@ def get_dealer_by_id_from_cf(url, id):
     json_result = get_request(url, id=id)
 
     if json_result:
+
+        # print("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=-")
+        # print(json_result)
+        # print("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=-")
+
         # Get the row list in JSON as dealers
-        dealers = json_result["body"]["rows"]
+        dealers = json_result
         # For each dealer object
         for dealer in dealers:
+
+            # print("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=-")
+            # print(dealer)
+            # print("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
+
             # Get its content in `doc` object
-            dealer_doc = dealer["doc"]
+            dealer_doc = dealer
 
             if dealer_doc["id"] == id:
                 # Create a CarDealer object with values in `doc` object
@@ -110,14 +120,19 @@ def get_dealer_by_id_from_cf(url, id):
 
     return results[0]
 
-def get_dealer_reviews_from_cf(url, dealerId):
+def get_dealer_reviews_from_cf(url, id):
     results = []
 
-    json_result = get_request(url, dealerId=dealerId)
+    json_result = get_request(url, id=id)
 
     if json_result:
-        reviews = json_result["body"]["data"]["docs"]
 
+        # print("=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
+        # print(json_result)
+        # print("=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
+
+        reviews = json_result["data"]["docs"]
+        
         for dealer_review in reviews:  
             review_obj = DealerReview(dealership=dealer_review["dealership"],
                                       name=dealer_review["name"], 
@@ -139,9 +154,6 @@ def get_dealer_reviews_from_cf(url, dealerId):
             if 'id' in dealer_review:
                 review_obj.id = dealer_review['id']
 
-            sentiment = analyze_review_sentiments(review_obj.review)
-            print(sentiment)
-            review_obj.sentiment = sentiment
             results.append(review_obj)
 
     return results
