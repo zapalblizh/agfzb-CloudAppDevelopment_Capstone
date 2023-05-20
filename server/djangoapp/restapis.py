@@ -155,7 +155,7 @@ def analyze_review_sentiments(text):
 
     url = "https://api.eu-gb.natural-language-understanding.watson.cloud.ibm.com/instances/972d8703-8374-460c-9cc7-960171e3ee5e" 
 
-    api_key = "Uc622BJbYFeCayawPcrKes_nDRPkeAm965lAOcFMtoF-" 
+    api_key = "" 
 
     authenticator = IAMAuthenticator(api_key) 
 
