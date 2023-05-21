@@ -25,11 +25,11 @@ class CarModel(models.Model):
         (WAGON, 'WAGON')
     ]
 #    id = models.AutoField(primary_key=True)
-    make = models.ForeignKey(CarMake, on_delete=models.CASCADE)
-    name = models.CharField(null=False, max_length=30, default='car model')
-    dealer_id = models.IntegerField(default=50)
-    car_type = models.CharField(max_length=5, choices=CAR_TYPES, default=SEDAN)
-    year = models.DateField(default=now)
+    car_make = models.ForeignKey(CarMake, on_delete=models.CASCADE)
+    name = models.CharField(max_length=120)
+    dealer_id = models.IntegerField()
+    car_type = models.CharField(max_length=10, choices=CAR_TYPES)
+    year = models.DateField()
 
     def __str__(self):
         return "Name: " + self.name + "," + \
